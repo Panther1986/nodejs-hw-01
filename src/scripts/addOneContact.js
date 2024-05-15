@@ -2,24 +2,14 @@ import { PATH_DB } from '../constants/contacts.js';
 import { createFakeContact } from '../utils/createFakeContact.js';
 import fs from 'node:fs/promises';
 
-export const addOneContact = async () => {
-  const data = createFakeContact();
-  let contacts;
+export const addOneContact = async (number) => {
+  const data = createFakeContact(number);
   try {
-    contacts = JSON.parse(await fs.readFile(PATH_DB, 'utf8'));
+    await fs.appendFile(PATH_DB, JSON.stringify(data), 'utf8');
+    console.log('Contact created successfully');
   } catch (error) {
-    contacts = [];
+    console.error('Помилка', error);
   }
-
-  const newContact = {
-    ...data,
-  };
-
-  contacts.push(newContact);
-
-  await fs.writeFile(PATH_DB, JSON.stringify(contacts, null, 2));
-
-  return newContact;
 };
 
-await addOneContact();
+await addOneContact(1);
